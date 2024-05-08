@@ -9,6 +9,10 @@ const skillsSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  color: {
+    type: String,
+    required: true,
+  },
 });
 
 const Skills = mongoose.model("Skills", skillsSchema);

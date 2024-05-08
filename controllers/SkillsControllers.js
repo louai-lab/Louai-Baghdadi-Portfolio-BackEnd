@@ -1,6 +1,5 @@
 import Skills from "../Models/SkillsModel.js";
 import fs from "fs";
-import mongoose from "mongoose";
 
 export const getSkills = async (req, res) => {
   try {
@@ -13,10 +12,10 @@ export const getSkills = async (req, res) => {
 };
 
 export const createSkill = async (req, res) => {
-  const { name } = req.body;
+  const { name, color } = req.body;
 
   try {
-    if (!name) {
+    if (!name || !color) {
       const iconPath = `public/images/${req.file.filename}`;
       fs.unlinkSync(iconPath);
       return res.status(400).json({ error: "All fields are required" });
@@ -30,6 +29,7 @@ export const createSkill = async (req, res) => {
 
     const newSkill = await Skills.create({
       name,
+      color,
       icon: image,
     });
 
@@ -44,7 +44,7 @@ export const createSkill = async (req, res) => {
 export const updateSkill = async (req, res) => {
   const id = req.params.id;
 
-  const { name } = req.body;
+  const { name, color } = req.body;
 
   try {
     const existingSkill = await Skills.findById(id);
@@ -54,6 +54,7 @@ export const updateSkill = async (req, res) => {
     }
 
     if (name) existingSkill.name = name;
+    if (color) existingSkill.color = color;
 
     const oldIcon = `public/images/${existingSkill.icon}`;
 

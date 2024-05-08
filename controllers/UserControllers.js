@@ -2,16 +2,6 @@ import User from "../Models/UserModel.js";
 import fs from "fs";
 import mongoose from "mongoose";
 
-// export const getUser = async (req, res) => {
-//   try {
-//     const user = await User.find();
-//     return res.status(200).json(user);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// };
-
 // Controller for getting one user by ID
 export const getUser = async (req, res) => {
   const id = "663a5e8e7be13859e8db683a";
@@ -125,5 +115,67 @@ export const createUser = async (req, res) => {
     }
 
     return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const updateUser = async (req, res) => {
+  const id = req.params.id;
+
+  const {
+    firstName,
+    lastName,
+    email,
+    career,
+    elevatorPitch,
+    linkedinLink,
+    instagramLink,
+    facebookLink,
+    githubLink,
+    startDate,
+  } = req.body;
+
+  const { profile, logo, cv } = req.files;
+
+  try {
+    const existingUser = await User.findById(id);
+
+    if (!existingUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (firstName) existingUser.firstName = firstName;
+    if (lastName) existingUser.lastName = lastName;
+    if (email) existingUser.email = email;
+    if (career) existingUser.career = career;
+    if (elevatorPitch) existingUser.elevatorPitch = elevatorPitch;
+    if (linkedinLink) existingUser.linkedinLink = linkedinLink;
+    if (instagramLink) existingUser.instagramLink = instagramLink;
+    if (facebookLink) existingUser.facebookLink = facebookLink;
+    if (githubLink) existingUser.githubLink = githubLink;
+    if (startDate) existingUser.startDate = startDate;
+
+    if (profile && existingUser.profile) {
+      fs.unlinkSync(`public/images/${existingUser.profile}`);
+      existingUser.profile = profile[0].filename;
+    }
+
+    if (logo && existingUser.logo) {
+      fs.unlinkSync(`public/images/${existingUser.logo}`);
+      existingUser.logo = logo[0].filename;
+    }
+
+    if (cv && existingUser.cv) {
+      fs.unlinkSync(`public/images/${existingUser.cv}`);
+      existingUser.cv = cv[0].filename;
+    }
+
+    const updatedUser = await existingUser.save();
+
+    res
+      .status(200)
+      .json({ message: "User updated successfully", user: updatedUser });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error", msg: error });
   }
 };

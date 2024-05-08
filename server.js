@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import connect from "./config/Config.js";
 import userRoutes from "./routes/UserRoutes.js";
+import skillsRoutes from "./routes/SkillsRoutes.js";
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ const corsOption = {
 
 app.use(cors(corsOption));
 app.use("/user", userRoutes);
+app.use("/skills", skillsRoutes);
 
 app.listen(PORT, () => {
   connect();

@@ -5,6 +5,7 @@ import connect from "./config/Config.js";
 import userRoutes from "./routes/UserRoutes.js";
 import skillsRoutes from "./routes/SkillsRoutes.js";
 import projectsRoutes from "./routes/ProjectsRoutes.js";
+import experiencesRoutes from "./routes/ExperiencesRoutes.js";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use("/images", express.static("images"));
 app.use("/user", userRoutes);
 app.use("/skills", skillsRoutes);
 app.use("/projects", projectsRoutes);
+app.use("/experiences", experiencesRoutes);
 
 app.listen(PORT, () => {
   connect();
